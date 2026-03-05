@@ -4,7 +4,7 @@ import { readLimiter } from '../middleware/rateLimiter.js';
 import { listActions } from '../services/db.js';
 import { logger } from '../logger.js';
 
-export const actionsRouter = Router();
+export const actionsRouter: Router = Router();
 
 // GET /actions?agentId=&status=&type=&limit=&offset=
 actionsRouter.get('/', readLimiter, (req: Request, res: Response) => {
