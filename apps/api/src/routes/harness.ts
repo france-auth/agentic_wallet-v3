@@ -1,4 +1,4 @@
-import { Router, type Request, type Response } from 'express';
+import { Router, type Router as RouterType, type Request, type Response } from 'express';
 import { HarnessStartSchema } from '../validators.js';
 import { apiKeyAuth } from '../middleware/auth.js';
 import { writeLimiter } from '../middleware/rateLimiter.js';
@@ -10,7 +10,7 @@ import {
 } from '../harness/runner.js';
 import { logger } from '../logger.js';
 
-export const harnessRouter = Router();
+export const harnessRouter: RouterType = Router();
 
 // GET /harness/status
 harnessRouter.get('/status', (_req, res) => {

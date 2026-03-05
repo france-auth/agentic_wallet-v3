@@ -1,11 +1,11 @@
-import { Router } from 'express';
+import { Router, type Router as RouterType } from 'express';
 import { getConnection } from '../services/solana.js';
 import { getDb } from '../services/db.js';
 import { getHarnessStatus } from '../harness/runner.js';
 import { getFunderInfo } from '../services/fundingService.js';
 import { config } from '../config.js';
 
-export const healthRouter = Router();
+export const healthRouter: RouterType = Router();
 
 healthRouter.get('/', async (_req, res) => {
   const checks: Record<string, 'ok' | 'error'> = {};

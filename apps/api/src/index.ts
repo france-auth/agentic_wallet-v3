@@ -1,3 +1,4 @@
+import express from 'express';
 import 'dotenv/config';
 import { createApp } from './app.js';
 import { config } from './config.js';
@@ -13,7 +14,7 @@ fs.mkdirSync(dataDir, { recursive: true });
 // Initialize DB eagerly
 getDb();
 
-const app = createApp();
+const app: express.Express = createApp();
 
 const server = app.listen(config.PORT, () => {
   logger.info(

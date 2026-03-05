@@ -15,10 +15,11 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "@solana/web3.js": "^1.95.4",
-    "@solana/spl-token": "^0.4.9"
+    "@solana/spl-token": "^0.4.9",
+    "@solana/web3.js": "^1.95.4"
   },
   "devDependencies": {
+    "@types/node": "^22.19.13",
     "typescript": "^5.5.4"
   }
 }

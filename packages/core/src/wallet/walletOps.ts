@@ -135,7 +135,7 @@ export async function jupiterSwap(
     };
   }
 
-  const quoteData = await quoteResp.json();
+  const quoteData = await quoteResp.json() as { outAmount?: string; [key: string]: unknown };
   if (!quoteData || !quoteData.outAmount) {
     return { ok: false, reason: 'NO_ROUTE', message: 'Jupiter quote returned no output amount' };
   }
@@ -168,14 +168,14 @@ export async function jupiterSwap(
     };
   }
 
-  const swapData = await swapResp.json();
+  const swapData = await swapResp.json() as { swapTransaction?: string; [key: string]: unknown };
   if (!swapData?.swapTransaction) {
     return { ok: false, reason: 'SWAP_FAILED', message: 'Jupiter swap: no transaction returned' };
   }
 
   // 3. Deserialize, sign, send
   try {
-    const txBuf = Buffer.from(swapData.swapTransaction, 'base64');
+    const txBuf = Buffer.from(swapData.swapTransaction as string, 'base64');
     const versionedTx = VersionedTransaction.deserialize(txBuf);
     versionedTx.sign([agentKeypair]);
 

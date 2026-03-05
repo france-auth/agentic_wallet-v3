@@ -8,7 +8,7 @@ import { actionsRouter } from './routes/actions.js';
 import { healthRouter } from './routes/health.js';
 import { logger } from './logger.js';
 
-export function createApp() {
+export function createApp(): express.Express {
   const app = express();
 
   // ── Security headers ────────────────────────────────────────────────────────

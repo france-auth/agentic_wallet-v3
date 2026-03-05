@@ -1,4 +1,4 @@
-import { Router, type Request, type Response } from 'express';
+import { Router, type Router as RouterType, type Request, type Response } from 'express';
 import { Keypair } from '@solana/web3.js';
 import { v4 as uuidv4 } from 'uuid';
 import type { AgentRecord, AgentWithBalances } from '@aws/core';
@@ -21,7 +21,7 @@ import { hasFunder } from '../services/funder.js';
 import { runAgentOnce } from '../harness/runner.js';
 import { logger } from '../logger.js';
 
-export const agentsRouter = Router();
+export const agentsRouter: RouterType = Router();
 
 // ─── GET /agents ─────────────────────────────────────────────────────────────
 
@@ -75,7 +75,7 @@ agentsRouter.get('/funder-info', readLimiter, async (_req: Request, res: Respons
 
 agentsRouter.get('/:id', readLimiter, async (req: Request, res: Response) => {
   try {
-    const agent = getAgentById(req.params.id);
+    const agent = getAgentById(req.params["id"] as string);
     if (!agent) {
       res.status(404).json({ error: 'Agent not found' });
       return;
@@ -214,7 +214,7 @@ agentsRouter.post('/create', apiKeyAuth, writeLimiter, async (req: Request, res:
 // ─── POST /agents/:id/fund ────────────────────────────────────────────────────
 
 agentsRouter.post('/:id/fund', apiKeyAuth, writeLimiter, async (req: Request, res: Response) => {
-  const agent = getAgentById(req.params.id);
+  const agent = getAgentById(req.params["id"] as string);
   if (!agent) {
     res.status(404).json({ error: 'Agent not found' });
     return;
@@ -227,11 +227,11 @@ agentsRouter.post('/:id/fund', apiKeyAuth, writeLimiter, async (req: Request, re
   }
 
   try {
-    const result = await fundAgent(req.params.id, parsed.data.amountSol);
+    const result = await fundAgent(req.params["id"] as string, parsed.data.amountSol);
     if (result.ok) {
       res.json({
         success: true,
-        agentId: req.params.id,
+        agentId: req.params["id"] as string,
         publicKey: agent.publicKey,
         solAmount: result.solAmount,
         method: result.method,
@@ -243,13 +243,13 @@ agentsRouter.post('/:id/fund', apiKeyAuth, writeLimiter, async (req: Request, re
     } else {
       res.status(502).json({
         success: false,
-        agentId: req.params.id,
+        agentId: req.params["id"] as string,
         method: result.method,
         error: result.reason,
       });
     }
   } catch (err) {
-    logger.error({ agentId: req.params.id, err }, 'POST /agents/:id/fund error');
+    logger.error({ agentId: req.params["id"] as string, err }, 'POST /agents/:id/fund error');
     res.status(500).json({ error: (err as Error).message });
   }
 });
@@ -278,16 +278,16 @@ agentsRouter.post('/fund-all', apiKeyAuth, writeLimiter, async (req: Request, re
 // ─── POST /agents/:id/run-once ────────────────────────────────────────────────
 
 agentsRouter.post('/:id/run-once', apiKeyAuth, writeLimiter, async (req: Request, res: Response) => {
-  const agent = getAgentById(req.params.id);
+  const agent = getAgentById(req.params["id"] as string);
   if (!agent) {
     res.status(404).json({ error: 'Agent not found' });
     return;
   }
   try {
-    const action = await runAgentOnce(req.params.id);
+    const action = await runAgentOnce(req.params["id"] as string);
     res.json({ action });
   } catch (err) {
-    logger.error({ agentId: req.params.id, err }, 'run-once error');
+    logger.error({ agentId: req.params["id"] as string, err }, 'run-once error');
     res.status(500).json({ error: (err as Error).message });
   }
 });
