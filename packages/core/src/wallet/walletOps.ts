@@ -116,7 +116,7 @@ export async function jupiterSwap(
     `${base}/quote?inputMint=${opts.inputMint}&outputMint=${opts.outputMint}` +
     `&amount=${opts.amountLamports}&slippageBps=${opts.slippageBps}&onlyDirectRoutes=false`;
 
-  let quoteResp: Awaited<ReturnType<typeof fetch>>;
+  let quoteResp: any;
   try {
     quoteResp = await fetch(quoteUrl, { signal: AbortSignal.timeout(15_000) });
   } catch (err) {
@@ -141,7 +141,7 @@ export async function jupiterSwap(
   }
 
   // 2. Get swap transaction
-  let swapResp: Awaited<ReturnType<typeof fetch>>;
+  let swapResp: any;
   try {
     swapResp = await fetch(`${base}/swap`, {
       method: 'POST',
