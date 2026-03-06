@@ -271,5 +271,8 @@ async function executeAction(
         amount: config.JUPITER_SWAP_AMOUNT_LAMPORTS,
       };
     }
+
+    default:
+      return { status: 'FAILED', error: `Unknown action type: ${type}` };
   }
 }
