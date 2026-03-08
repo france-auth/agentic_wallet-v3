@@ -1,6 +1,5 @@
 {
   "buildCommand": "pnpm --filter @aws/core build && pnpm --filter @aws/web build",
-  "outputDirectory": "apps/web/.next",
   "framework": "nextjs",
   "installCommand": "pnpm install"
 }
