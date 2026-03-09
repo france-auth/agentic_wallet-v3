@@ -1,11 +1,11 @@
-# ◈ Agentic Wallet Sandbox
+# ◈ Agentic Wallet
 
 > **⚠️ PROTOTYPE WARNING**: This is a devnet-only prototype built for demonstration purposes. It uses Solana **devnet** and does NOT involve real funds. **Do NOT use production private keys, mainnet wallets, or real SOL.** The encryption and security measures are appropriate for a prototype, not a production system.
 
 A multi-agent autonomous wallet system on Solana devnet. AI agents create their own wallets, hold SOL and SPL tokens, make independent financial decisions, and automatically execute transactions — including Jupiter DEX swaps — without any human intervention. All activity is observable through a live Next.js dashboard.
 
-🔗 **Live Demo**: [https://your-vercel-app.vercel.app](https://your-vercel-app.vercel.app)
-🔗 **API**: [https://your-railway-app.railway.app](https://your-railway-app.railway.app)
+🔗 **Live Demo**: [https://agentic-wallet.vercel.app/](https://agentic-wallet.vercel.app/)
+🔗 **API**: [https://awsapi-production.up.railway.app/health](https://awsapi-production.up.railway.app/health)
 
 ---
 
@@ -158,7 +158,7 @@ npm install -g pnpm
 
 ```bash
 git clone https://github.com/france-auth/agentic_wallet-v3
-cd agentic-wallet-sandbox
+cd agentic_wallet-v3
 pnpm install
 ```
 
@@ -285,6 +285,54 @@ Click any action row → bottom sheet → "View on Solana Explorer". Every trans
 
 All endpoints except `GET /health` require `x-api-key` header.
 
+## Judges & Reviewers — Live API Access
+
+The deployed API is open for judges to explore. All endpoints are live on devnet.
+
+**Base URL**: `https://awsapi-production.up.railway.app`
+**API Key**: `thebuiildingjackapikey@2002`
+
+### Verify the system is running
+```bash
+curl https://awsapi-production.up.railway.app/health
+```
+
+### View all agent wallets and balances
+```bash
+curl https://awsapi-production.up.railway.app/agents \
+  -H "x-api-key: thebuiildingjackapikey@2002"
+```
+
+### View full transaction history
+```bash
+curl https://awsapi-production.up.railway.app/actions \
+  -H "x-api-key: thebuiildingjackapikey@2002"
+```
+
+### Create new agents and watch them trade
+```bash
+curl -X POST https://awsapi-production.up.railway.app/agents/create \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: thebuiildingjackapikey@2002" \
+  -d '{"count": 2}'
+```
+
+### Start the autonomous loop
+```bash
+curl -X POST https://awsapi-production.up.railway.app/harness/start \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: thebuiildingjackapikey@2002" \
+  -d '{"intervalMs": 15000}'
+```
+
+### Verify any transaction on-chain
+Every action in the response includes a `explorerUrl` field. Open it in your browser to verify the transaction is real and confirmed on Solana devnet. Example:
+```
+https://explorer.solana.com/tx/<signature>?cluster=devnet
+```
+
+> **Note on private keys**: Agent private keys are stored AES-256-GCM encrypted in the database and are never exposed through any API endpoint. The only way to decrypt them is with the `AGENT_MASTER_KEY` environment variable which lives exclusively in Railway's environment settings. See [SECURITY.md](./SECURITY.md) for the full key management model.
+
 ---
 
 ## Scripts
@@ -305,10 +353,17 @@ All endpoints except `GET /health` require `x-api-key` header.
 
 This project is deployed as a split stack:
 
-- **Backend (Railway)**: `apps/api` — Node.js Express server
-- **Frontend (Vercel)**: `apps/web` — Next.js 14 App Router
+**Railway (API)**
+- Root directory: `apps/api` — Node.js Express server
+- Build command: `pnpm install && pnpm --filter @aws/core build && pnpm --filter @aws/api build`
+- Start command: `pnpm --filter @aws/api start`
+- Add all `apps/api/.env` variables in Railway's environment settings
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for full Railway + Vercel setup instructions.
+**Vercel (Frontend)**
+- Root directory: `apps/web` — Next.js 14 App Router
+- Build command: `pnpm --filter @aws/core build && pnpm --filter @aws/web build`
+- Output directory: `.next`
+- Add `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_API_KEY` in Vercel environment settings
 
 ---
 
